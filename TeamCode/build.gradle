@@ -35,4 +35,6 @@ kotlin {
 
 dependencies {
     implementation project(':FtcRobotController')
+
+    //Warning! Sloth 0.2.4 isn't yet compatible with gradle 9
 }
