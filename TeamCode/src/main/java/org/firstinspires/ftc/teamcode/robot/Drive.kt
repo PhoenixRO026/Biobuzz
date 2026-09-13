@@ -5,6 +5,7 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import kotlin.math.absoluteValue
@@ -96,4 +97,11 @@ class Drive(
     }
 
     private fun getHeadingRad() = pinpoint.getHeading(AngleUnit.RADIANS)
+
+    fun addTelemetry(telemetry: Telemetry) {
+        telemetry.apply {
+            addData("heading deg", Math.toDegrees(heading))
+            addData("pinpoint heading deg", Math.toDegrees(getHeadingRad()))
+        }
+    }
 }

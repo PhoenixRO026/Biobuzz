@@ -14,7 +14,7 @@ class TimeKeep {
         if (isInitialized.not()) {
             isInitialized = true
             currentTime = timeNow()
-            previousTime = currentTime - 1.ms
+            previousTime = currentTime - 20.ms
             return
         }
 
