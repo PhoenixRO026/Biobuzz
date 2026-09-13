@@ -26,15 +26,15 @@ class Transfer(
 
     @Config("Transfer")
     companion object {
-        @JvmField var servoMin = 0.0
-        @JvmField var servoMax = 1.0
-        @JvmField var servoInit = 0.5
+        @JvmField var servoMin = 1.0
+        @JvmField var servoMax = 0.75
+        @JvmField var servoInit = 1.0
     }
 
     init {
         motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        motor.direction = DcMotorSimple.Direction.FORWARD
+        motor.direction = DcMotorSimple.Direction.REVERSE
     }
 
     fun initPos() {

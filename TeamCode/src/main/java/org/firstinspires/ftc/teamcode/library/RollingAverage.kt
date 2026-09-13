@@ -27,6 +27,7 @@ class RollingAverage(
         repeat(elements) {
             total += array[i]
             i = (i - 1) % size
+            if (i < 0) i = size - 1
         }
 
         return total / elements

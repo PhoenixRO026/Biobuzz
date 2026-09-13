@@ -22,11 +22,8 @@ class BuzzyDrive : LinearOpMode() {
     }
 
     private val timeKeep = TimeKeep()
-    private val loopMsAvg = RollingAverage(10)
-    private val fpsAvg = RollingAverage(10)
-    private val increaseRpm = ButtonReader { gamepad2.right_bumper }
-    private val decreaseRpm = ButtonReader { gamepad2.left_bumper }
-    private val buttons = listOf(increaseRpm, decreaseRpm)
+//    private val loopMsAvg = RollingAverage(10)
+//    private val fpsAvg = RollingAverage(10)
 
     override fun runOpMode() {
         val drive = Drive(hardwareMap)
@@ -35,6 +32,11 @@ class BuzzyDrive : LinearOpMode() {
         val shooter = Shooter(hardwareMap)
 
         telemetry = MultipleTelemetry(telemetry, FtcDashboard.getInstance().telemetry)
+
+        val increaseRpm = ButtonReader { gamepad2.right_bumper }
+        val decreaseRpm = ButtonReader { gamepad2.left_bumper }
+        val kicker = ButtonReader { gamepad2.x }
+        val buttons = listOf(increaseRpm, decreaseRpm, kicker)
 
         waitForStart()
 
@@ -46,9 +48,9 @@ class BuzzyDrive : LinearOpMode() {
 
             movement(drive)
 
-            shooter(shooter)
+            shooter(shooter, increaseRpm, decreaseRpm)
 
-            transfer(transfer)
+            transfer(transfer, kicker)
 
             intake.power = gamepad2.right_trigger.toDouble() - gamepad2.left_trigger.toDouble()
 
@@ -63,7 +65,7 @@ class BuzzyDrive : LinearOpMode() {
         }
     }
 
-    fun shooter(shooter: Shooter) {
+    fun shooter(shooter: Shooter, increaseRpm: ButtonReader, decreaseRpm: ButtonReader) {
         if (increaseRpm.wasJustPressed()) {
             shooter.targetRpm += 500
         }
@@ -79,7 +81,7 @@ class BuzzyDrive : LinearOpMode() {
         shooter.update(timeKeep.deltaTime)
     }
 
-    fun transfer(transfer: Transfer) {
+    fun transfer(transfer: Transfer, kicker: ButtonReader) {
         transfer.power = - gamepad2.left_stick_y.toDouble()
 
         if (gamepad2.dpad_up) {
@@ -88,9 +90,10 @@ class BuzzyDrive : LinearOpMode() {
             transfer.kickerPos -= 0.33 * timeKeep.deltaTime.asS
         }
 
-        if (gamepad2.x) {
+        if (kicker.wasJustPressed()) {
             transfer.kickerUp()
-        } else {
+        }
+        if (kicker.wasJustReleased()) {
             transfer.kickerDown()
         }
     }
@@ -112,10 +115,10 @@ class BuzzyDrive : LinearOpMode() {
     }
 
     fun addStatistics() {
-        loopMsAvg.add(timeKeep.deltaTime.asMs)
-        fpsAvg.add(1.s / timeKeep.deltaTime)
+//        loopMsAvg.add(timeKeep.deltaTime.asMs)
+//        fpsAvg.add(1.s / timeKeep.deltaTime)
 
-        telemetry.addData("loop time ms", loopMsAvg.avg())
-        telemetry.addData("fps", fpsAvg.avg())
+//        telemetry.addData("loop time ms", loopMsAvg.avg())
+//        telemetry.addData("fps", fpsAvg.avg())
     }
 }

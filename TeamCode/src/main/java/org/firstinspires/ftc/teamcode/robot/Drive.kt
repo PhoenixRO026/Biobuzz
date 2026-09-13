@@ -42,10 +42,10 @@ class Drive(
             it.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
             it.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         }
-        rightFront.direction = DcMotorSimple.Direction.FORWARD
-        rightBack.direction = DcMotorSimple.Direction.FORWARD
-        leftFront.direction = DcMotorSimple.Direction.REVERSE
-        leftBack.direction = DcMotorSimple.Direction.REVERSE
+        rightFront.direction = DcMotorSimple.Direction.REVERSE
+        rightBack.direction = DcMotorSimple.Direction.REVERSE
+        leftFront.direction = DcMotorSimple.Direction.FORWARD
+        leftBack.direction = DcMotorSimple.Direction.FORWARD
 
         pinpoint.setOffsets(xOffset, yOffset, DistanceUnit.MM)
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
