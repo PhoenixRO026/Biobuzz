@@ -46,6 +46,9 @@ class Shooter(
         motorRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         motorLeft.direction = DcMotorSimple.Direction.REVERSE
         motorRight.direction = DcMotorSimple.Direction.FORWARD
+
+        motorRight.power = 0.0
+        motorLeft.power = 0.0
     }
 
     private var power
