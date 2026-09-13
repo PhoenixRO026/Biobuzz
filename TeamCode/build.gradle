@@ -22,7 +22,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "dev.frozenmilk:Load:0.3.0"
+//        classpath "dev.frozenmilk:Load:0.3.0"
     }
 }
 
@@ -30,7 +30,7 @@ buildscript {
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
 apply plugin: 'kotlin-android'
-apply plugin: 'dev.frozenmilk.sinister.sloth.load'
+//apply plugin: 'dev.frozenmilk.sinister.sloth.load'
 
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
@@ -57,8 +57,9 @@ dependencies {
     implementation project(':FtcRobotController')
     implementation project(':CommonLibs')
 
-    implementation("dev.frozenmilk.sinister:Sloth:0.3.0")
-    implementation("com.acmerobotics.slothboard:dashboard:0.3.0+0.6.0")
+//    implementation("dev.frozenmilk.sinister:Sloth:0.3.0")
+//    implementation("com.acmerobotics.slothboard:dashboard:0.3.0+0.6.0")
+    implementation("com.acmerobotics.dashboard:dashboard:0.6.0")
     //Warning! Panels not yet updated to work with sloth 0.3.0
 
     implementation ("com.acmerobotics.roadrunner:ftc:0.1.25") {

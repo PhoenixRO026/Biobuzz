@@ -31,9 +31,9 @@ class Shooter(
     companion object {
         @JvmField var targetRpmShooter = 0.0
         @JvmField var controller = PIDController(
-            kP = 0.0011,
-            kI = 0.0000001,
-            kD = 0.0012,
+            kP = 0.0001 ,
+            kI = 0.0,
+            kD = 0.0,
         )
         @JvmField var kS = 1.125
         @JvmField var kV = 0.002065
@@ -44,11 +44,13 @@ class Shooter(
         motorRight.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         motorLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         motorRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        motorLeft.direction = DcMotorSimple.Direction.REVERSE
-        motorRight.direction = DcMotorSimple.Direction.FORWARD
+        motorLeft.direction = DcMotorSimple.Direction.FORWARD
+        motorRight.direction = DcMotorSimple.Direction.REVERSE
 
         motorRight.power = 0.0
         motorLeft.power = 0.0
+
+        targetRpmShooter = 0.0
     }
 
     private var power
@@ -60,7 +62,7 @@ class Shooter(
 
     val motorPower get() = power
 
-    val currentRpm get() = motorRight.velocity * 60.0 / 28
+    val currentRpm get() = - motorRight.velocity * 60.0 / 28
 
     var targetRpm
         get() = targetRpmShooter

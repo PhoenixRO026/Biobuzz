@@ -22,7 +22,7 @@ class Intake(
     init {
         motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        motor.direction = DcMotorSimple.Direction.FORWARD
+        motor.direction = DcMotorSimple.Direction.REVERSE
     }
 
     var power by motor::power
