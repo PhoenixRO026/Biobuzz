@@ -37,9 +37,6 @@ class Transfer(
         motor.direction = DcMotorSimple.Direction.FORWARD
     }
 
-    private var lastKickTime = Time.now()
-    private var kickTimerEnabled = false
-
     fun initPos() {
         kickerPos = servoInit
     }
@@ -50,15 +47,10 @@ class Transfer(
 
     fun kickerUp() {
         kickerPos = servoMax
-        lastKickTime = Time.now()
-        kickTimerEnabled = true
     }
 
-    fun update() {
-        if (kickTimerEnabled && Time.now() - lastKickTime >= 1.s) {
-            kickerPos = servoMin
-            kickTimerEnabled = false
-        }
+    fun kickerDown() {
+        kickerPos = servoMin
     }
 
     fun addTelemetry(telemetry: Telemetry) {

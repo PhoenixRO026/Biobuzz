@@ -90,9 +90,9 @@ class BuzzyDrive : LinearOpMode() {
 
         if (gamepad2.x) {
             transfer.kickerUp()
+        } else {
+            transfer.kickerDown()
         }
-
-        transfer.update()
     }
 
     fun movement(drive: Drive) {
