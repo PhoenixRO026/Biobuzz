@@ -21,24 +21,24 @@ class BuzzyDrive : LinearOpMode() {
         @JvmField var telemetryDisabled = false
     }
 
-    val timeKeep = TimeKeep()
-    val loopMsAvg = RollingAverage(10)
-    val fpsAvg = RollingAverage(10)
+    private val timeKeep = TimeKeep()
+    private val loopMsAvg = RollingAverage(10)
+    private val fpsAvg = RollingAverage(10)
+    private val increaseRpm = ButtonReader { gamepad2.right_bumper }
+    private val decreaseRpm = ButtonReader { gamepad2.left_bumper }
+    private val buttons = listOf(increaseRpm, decreaseRpm)
 
     override fun runOpMode() {
         val drive = Drive(hardwareMap)
         val intake = Intake(hardwareMap)
-        val trasfer = Transfer(hardwareMap)
+        val transfer = Transfer(hardwareMap)
         val shooter = Shooter(hardwareMap)
 
         telemetry = MultipleTelemetry(telemetry, FtcDashboard.getInstance().telemetry)
 
-        val increaseRpm = ButtonReader { gamepad2.right_bumper }
-        val decreaseRpm = ButtonReader { gamepad2.left_bumper }
-
-        val buttons = listOf(increaseRpm, decreaseRpm)
-
         waitForStart()
+
+        transfer.initPos()
 
         while (opModeIsActive()) {
             timeKeep.resetDeltaTime()
@@ -46,23 +46,11 @@ class BuzzyDrive : LinearOpMode() {
 
             movement(drive)
 
+            shooter(shooter)
+
+            transfer(transfer)
+
             intake.power = gamepad2.right_trigger.toDouble() - gamepad2.left_trigger.toDouble()
-
-            trasfer.power = - gamepad2.left_stick_y.toDouble()
-
-            if (increaseRpm.wasJustPressed()) {
-                shooter.targetRpm += 500
-            }
-
-            if (decreaseRpm.wasJustPressed()) {
-                shooter.targetRpm -= 500
-            }
-
-            if (gamepad2.b) {
-                shooter.targetRpm = 0.0
-            }
-
-            shooter.update(timeKeep.deltaTime)
 
             if (telemetryDisabled) continue
 
@@ -70,9 +58,41 @@ class BuzzyDrive : LinearOpMode() {
             shooter.addTelemetry(telemetry)
             drive.addTelemetry(telemetry)
             intake.addTelemetry(telemetry)
-            trasfer.addTelemetry(telemetry)
+            transfer.addTelemetry(telemetry)
             telemetry.update()
         }
+    }
+
+    fun shooter(shooter: Shooter) {
+        if (increaseRpm.wasJustPressed()) {
+            shooter.targetRpm += 500
+        }
+
+        if (decreaseRpm.wasJustPressed()) {
+            shooter.targetRpm -= 500
+        }
+
+        if (gamepad2.b) {
+            shooter.targetRpm = 0.0
+        }
+
+        shooter.update(timeKeep.deltaTime)
+    }
+
+    fun transfer(transfer: Transfer) {
+        transfer.power = - gamepad2.left_stick_y.toDouble()
+
+        if (gamepad2.dpad_up) {
+            transfer.kickerPos += 0.33 * timeKeep.deltaTime.asS
+        } else if (gamepad2.dpad_down) {
+            transfer.kickerPos -= 0.33 * timeKeep.deltaTime.asS
+        }
+
+        if (gamepad2.x) {
+            transfer.kickerUp()
+        }
+
+        transfer.update()
     }
 
     fun movement(drive: Drive) {

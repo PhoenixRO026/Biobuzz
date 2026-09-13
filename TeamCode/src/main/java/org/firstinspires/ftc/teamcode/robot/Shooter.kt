@@ -31,12 +31,12 @@ class Shooter(
     companion object {
         @JvmField var targetRpmShooter = 0.0
         @JvmField var controller = PIDController(
-            kP = 0.0,
-            kI = 0.0,
-            kD = 0.0,
+            kP = 0.0011,
+            kI = 0.0000001,
+            kD = 0.0012,
         )
-        @JvmField var kS = 0.0
-        @JvmField var kV = 0.0
+        @JvmField var kS = 1.125
+        @JvmField var kV = 0.002065
     }
 
     init {
