@@ -16,7 +16,7 @@ import com.commonlibs.units.Angle
 import com.commonlibs.units.Distance
 import com.commonlibs.units.Distance2d
 import com.commonlibs.units.Duration
-import com.commonlibs.units.Pose
+import com.commonlibs.units.PoseEx
 
 class TrajectoryActionBuilderEx(private var builder: TrajectoryActionBuilder) {
 
@@ -371,10 +371,10 @@ class TrajectoryActionBuilderEx(private var builder: TrajectoryActionBuilder) {
 
     @JvmOverloads
     fun strafeToLinearHeading(
-        pose: Pose,
+        poseEx: PoseEx,
         velConstraintOverride: VelConstraint? = null,
         accelConstraintOverride: AccelConstraint? = null
-    ) = strafeToLinearHeading(pose.position, pose.heading, velConstraintOverride, accelConstraintOverride)
+    ) = strafeToLinearHeading(poseEx.position, poseEx.heading, velConstraintOverride, accelConstraintOverride)
 
     @JvmOverloads
     fun strafeToSplineHeading(
@@ -406,10 +406,10 @@ class TrajectoryActionBuilderEx(private var builder: TrajectoryActionBuilder) {
 
     @JvmOverloads
     fun strafeToSplineHeading(
-        pose: Pose,
+        poseEx: PoseEx,
         velConstraintOverride: VelConstraint? = null,
         accelConstraintOverride: AccelConstraint? = null
-    ) = strafeToSplineHeading(pose.position, pose.heading, velConstraintOverride, accelConstraintOverride)
+    ) = strafeToSplineHeading(poseEx.position, poseEx.heading, velConstraintOverride, accelConstraintOverride)
 
 
     @JvmOverloads
@@ -493,11 +493,11 @@ class TrajectoryActionBuilderEx(private var builder: TrajectoryActionBuilder) {
 
     @JvmOverloads
     fun splineToLinearHeading(
-        pose: Pose,
+        poseEx: PoseEx,
         tangent: Angle,
         velConstraintOverride: VelConstraint? = null,
         accelConstraintOverride: AccelConstraint? = null
-    ) = splineToLinearHeading(pose.pose2d, tangent.asRad, velConstraintOverride, accelConstraintOverride)
+    ) = splineToLinearHeading(poseEx.pose2d, tangent.asRad, velConstraintOverride, accelConstraintOverride)
 
     @JvmOverloads
     fun splineToSplineHeading(
@@ -522,11 +522,11 @@ class TrajectoryActionBuilderEx(private var builder: TrajectoryActionBuilder) {
 
     @JvmOverloads
     fun splineToSplineHeading(
-        pose: Pose,
+        poseEx: PoseEx,
         tangent: Angle,
         velConstraintOverride: VelConstraint? = null,
         accelConstraintOverride: AccelConstraint? = null
-    ) = splineToSplineHeading(pose.pose2d, tangent.asRad, velConstraintOverride, accelConstraintOverride)
+    ) = splineToSplineHeading(poseEx.pose2d, tangent.asRad, velConstraintOverride, accelConstraintOverride)
 
     /**
      * Creates a new builder with the same settings at the current pose, tangent.

@@ -5,6 +5,7 @@ package com.commonlibs.units
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.PoseVelocity2d
 import com.acmerobotics.roadrunner.Vector2d
+import com.pedropathing.math.Pose
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -83,7 +84,7 @@ data class Distance2d(@JvmField var x: Distance, @JvmField var y: Distance) {
 
     val vector2d get() = asInch
 
-    fun headingTowards(destination: Distance2d): Pose {
+    fun headingTowards(destination: Distance2d): PoseEx {
         return this.vector2d.headingTowards(destination.vector2d).pose
     }
 }
@@ -101,28 +102,29 @@ fun inch(vector: Vector2d) = vector.inch
 fun dist(vector: Vector2d) = vector.dist
 
 @Suppress("FunctionName")
-fun Pose2d(position: Distance2d, heading: Angle) = Pose(position, heading)
+fun Pose2d(position: Distance2d, heading: Angle) = PoseEx(position, heading)
 
 @Suppress("FunctionName")
-fun Pose2d(x: Distance, y: Distance, heading: Angle) = Pose(x, y, heading)
+fun Pose2d(x: Distance, y: Distance, heading: Angle) = PoseEx(x, y, heading)
 
-data class Pose(@JvmField var position: Distance2d, @JvmField var heading: Angle) {
+data class PoseEx(@JvmField var position: Distance2d, @JvmField var heading: Angle) {
     constructor(x: Distance, y: Distance, heading: Angle) : this(Distance2d(x, y), heading)
 
-    operator fun plus(other: Pose) = Pose(position + other.position, heading + other.heading)
-    operator fun plus(other: Distance2d) = Pose(position + other, heading)
-    operator fun plus(other: Angle) = Pose(position, heading + other)
-    operator fun minus(other: Pose) = Pose(position - other.position, heading - other.heading)
-    operator fun minus(other: Distance2d) = Pose(position - other, heading)
-    operator fun minus(other: Angle) = Pose(position, heading - other)
+    operator fun plus(other: PoseEx) = PoseEx(position + other.position, heading + other.heading)
+    operator fun plus(other: Distance2d) = PoseEx(position + other, heading)
+    operator fun plus(other: Angle) = PoseEx(position, heading + other)
+    operator fun minus(other: PoseEx) = PoseEx(position - other.position, heading - other.heading)
+    operator fun minus(other: Distance2d) = PoseEx(position - other, heading)
+    operator fun minus(other: Angle) = PoseEx(position, heading - other)
 
     val pose2d get() = Pose2d(position.asInch, heading.asRad)
+    val pedro get() = Pose(position.x.asInch, position.y.asInch, heading.asRad)
 }
 
-val Pose2d.m get() = Pose(position.m, heading.angle)
-val Pose2d.mm get() = Pose(position.mm, heading.angle)
-val Pose2d.cm get() = Pose(position.cm, heading.angle)
-val Pose2d.inch get() = Pose(position.inch, heading.angle)
+val Pose2d.m get() = PoseEx(position.m, heading.angle)
+val Pose2d.mm get() = PoseEx(position.mm, heading.angle)
+val Pose2d.cm get() = PoseEx(position.cm, heading.angle)
+val Pose2d.inch get() = PoseEx(position.inch, heading.angle)
 val Pose2d.pose get() = inch
 
 fun m(pose2d: Pose2d) = pose2d.m
