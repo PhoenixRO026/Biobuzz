@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robot
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
@@ -41,6 +42,10 @@ class Drive(
             it.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
             it.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         }
+        rightFront.direction = DcMotorSimple.Direction.FORWARD
+        rightBack.direction = DcMotorSimple.Direction.FORWARD
+        leftFront.direction = DcMotorSimple.Direction.REVERSE
+        leftBack.direction = DcMotorSimple.Direction.REVERSE
 
         pinpoint.setOffsets(xOffset, yOffset, DistanceUnit.MM)
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
@@ -56,10 +61,13 @@ class Drive(
         headingOffset = getHeadingRad()
     }
 
+    fun updatePinpoint() {
+        pinpoint.update()
+    }
+
     var slowMode = false
 
     fun driveFieldCentric(forward: Double, strafe: Double, rotate: Double) {
-        pinpoint.update()
         val headingRad = heading
         val rotatedForward   = forward * cos(headingRad) - strafe * sin(headingRad)
         val rotatedStrafe    = forward * sin(headingRad) + strafe * cos(headingRad)
