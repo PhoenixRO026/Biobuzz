@@ -19,10 +19,6 @@ class Intake(
         hardwareMap.get(DcMotor::class.java, HardwareNames.motorIntake)
     )
 
-    @Config("Intake")
-    companion object {
-    }
-
     init {
         motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE

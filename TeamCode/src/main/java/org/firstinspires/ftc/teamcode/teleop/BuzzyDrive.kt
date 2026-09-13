@@ -14,9 +14,10 @@ import org.firstinspires.ftc.teamcode.robot.Intake
 import org.firstinspires.ftc.teamcode.robot.Shooter
 import org.firstinspires.ftc.teamcode.robot.Transfer
 
+@Config("Buzzy")
 @TeleOp(name = "Buzzy Drive")
 class BuzzyDrive : LinearOpMode() {
-    @Config("Buzzy")
+
     companion object {
         @JvmField var telemetryDisabled = false
     }

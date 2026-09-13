@@ -15,6 +15,7 @@ import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.sin
 
+@Config("Transfer")
 class Transfer(
     private val motor: DcMotor,
     private val servo: Servo
@@ -24,7 +25,6 @@ class Transfer(
         hardwareMap.get(Servo::class.java, HardwareNames.servoKicker)
     )
 
-    @Config("Transfer")
     companion object {
         @JvmField var servoMin = 1.0
         @JvmField var servoMax = 0.75

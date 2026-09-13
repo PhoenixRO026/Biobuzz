@@ -12,6 +12,7 @@ import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.sin
 
+@Config("Drive")
 class Drive(
     private val leftFront: DcMotor,
     private val leftBack: DcMotor,
@@ -27,7 +28,6 @@ class Drive(
         hardwareMap.get(GoBildaPinpointDriver::class.java, HardwareNames.pinpoint)
     )
 
-    @Config("Drive")
     companion object {
         @JvmField var slowSpeed = 0.5
         @JvmField var xOffset = 0.0

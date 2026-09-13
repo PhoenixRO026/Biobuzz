@@ -14,9 +14,10 @@ import org.firstinspires.ftc.teamcode.robot.Intake
 import org.firstinspires.ftc.teamcode.robot.Shooter
 import org.firstinspires.ftc.teamcode.robot.Transfer
 
+@Config("Drive Only")
 @TeleOp(name = "Drive Only")
 class DriveOnly : LinearOpMode() {
-    @Config("Drive Only")
+
     companion object {
         @JvmField var telemetryDisabled = false
     }

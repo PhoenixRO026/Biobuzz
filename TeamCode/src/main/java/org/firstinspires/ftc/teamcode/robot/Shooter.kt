@@ -16,6 +16,7 @@ import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.sin
 
+@Config("Shooter")
 class Shooter(
     private val motorLeft: DcMotorEx,
     private val motorRight: DcMotorEx,
@@ -27,7 +28,6 @@ class Shooter(
         hardwareMap.get(VoltageSensor::class.java, HardwareNames.voltage)
     )
 
-    @Config("Shooter")
     companion object {
         @JvmField var targetRpmShooter = 0.0
         @JvmField var controller = PIDController(
