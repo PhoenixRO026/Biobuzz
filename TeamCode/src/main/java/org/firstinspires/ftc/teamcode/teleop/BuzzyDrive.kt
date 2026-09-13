@@ -8,8 +8,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.library.RollingAverage
 import org.firstinspires.ftc.teamcode.library.TimeKeep
+import org.firstinspires.ftc.teamcode.library.buttons.ButtonReader
 import org.firstinspires.ftc.teamcode.robot.Drive
 import org.firstinspires.ftc.teamcode.robot.Intake
+import org.firstinspires.ftc.teamcode.robot.Shooter
 import org.firstinspires.ftc.teamcode.robot.Transfer
 
 @TeleOp(name = "Buzzy Drive")
@@ -27,13 +29,20 @@ class BuzzyDrive : LinearOpMode() {
         val drive = Drive(hardwareMap)
         val intake = Intake(hardwareMap)
         val trasfer = Transfer(hardwareMap)
+        val shooter = Shooter(hardwareMap)
 
         telemetry = MultipleTelemetry(telemetry, FtcDashboard.getInstance().telemetry)
+
+        val increaseRpm = ButtonReader { gamepad2.right_bumper }
+        val decreaseRpm = ButtonReader { gamepad2.left_bumper }
+
+        val buttons = listOf(increaseRpm, decreaseRpm)
 
         waitForStart()
 
         while (opModeIsActive()) {
             timeKeep.resetDeltaTime()
+            buttons.forEach { it.readValue() }
 
             movement(drive)
 
@@ -41,9 +50,24 @@ class BuzzyDrive : LinearOpMode() {
 
             trasfer.power = - gamepad2.left_stick_y.toDouble()
 
+            if (increaseRpm.wasJustPressed()) {
+                shooter.targetRpm += 500
+            }
+
+            if (decreaseRpm.wasJustPressed()) {
+                shooter.targetRpm -= 500
+            }
+
+            if (gamepad2.b) {
+                shooter.targetRpm = 0.0
+            }
+
+            shooter.update(timeKeep.deltaTime)
+
             if (telemetryDisabled) continue
 
             addStatistics()
+            shooter.addTelemetry(telemetry)
             drive.addTelemetry(telemetry)
             intake.addTelemetry(telemetry)
             trasfer.addTelemetry(telemetry)

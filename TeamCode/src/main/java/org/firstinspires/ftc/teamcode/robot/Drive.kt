@@ -36,9 +36,8 @@ class Drive(
         @JvmField var yDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD
     }
 
-    private val motors = listOf(leftFront, leftBack, rightFront, rightBack)
-
     init {
+        val motors = listOf(leftFront, leftBack, rightFront, rightBack)
         motors.forEach {
             it.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
             it.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE

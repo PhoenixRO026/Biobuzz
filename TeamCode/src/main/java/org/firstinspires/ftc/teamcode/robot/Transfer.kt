@@ -13,7 +13,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class Transfer(
-    private val motor: DcMotor,
+    private val motor: DcMotor
 ) {
     constructor(hardwareMap: HardwareMap): this(
         hardwareMap.get(DcMotor::class.java, HardwareNames.motorTransfer)
