@@ -68,7 +68,7 @@ class Drive(
     var slowMode = false
 
     fun driveFieldCentric(forward: Double, strafe: Double, rotate: Double) {
-        val headingRad = heading
+        val headingRad = - heading
         val rotatedForward   = forward * cos(headingRad) - strafe * sin(headingRad)
         val rotatedStrafe    = forward * sin(headingRad) + strafe * cos(headingRad)
 
