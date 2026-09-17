@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.PoseVelocity2d
 import com.acmerobotics.roadrunner.Vector2d
 import com.pedropathing.math.Pose
+import com.pedropathing.math.Vector2D
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -82,10 +83,12 @@ data class Distance2d(@JvmField var x: Distance, @JvmField var y: Distance) {
     val asCm get() = Vector2d(x.asCm, y.asCm)
     val asInch get() = Vector2d(x.asInch, y.asInch)
 
-    val vector2d get() = asInch
+    val rrunner get() = asInch
+
+    val pedro: Vector2D get() = Vector2D.cartesian(x.asInch, y.asInch)
 
     fun headingTowards(destination: Distance2d): PoseEx {
-        return this.vector2d.headingTowards(destination.vector2d).pose
+        return this.rrunner.headingTowards(destination.rrunner).pose
     }
 }
 
@@ -117,7 +120,7 @@ data class PoseEx(@JvmField var position: Distance2d, @JvmField var heading: Ang
     operator fun minus(other: Distance2d) = PoseEx(position - other, heading)
     operator fun minus(other: Angle) = PoseEx(position, heading - other)
 
-    val pose2d get() = Pose2d(position.asInch, heading.asRad)
+    val rrunner get() = Pose2d(position.asInch, heading.asRad)
     val pedro get() = Pose(position.x.asInch, position.y.asInch, heading.asRad)
 }
 
