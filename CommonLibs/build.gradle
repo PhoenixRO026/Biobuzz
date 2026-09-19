@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly ("com.pedropathing:core:3.0.0")
+    compileOnly ("com.pedropathing:core:3.0.1")
     compileOnly ("com.acmerobotics.roadrunner:core:1.0.1")
     compileOnly ("com.acmerobotics.roadrunner:actions:1.0.1")
 }
