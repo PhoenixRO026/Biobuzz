@@ -73,12 +73,16 @@ dependencies {
 
     //SLOTH DISABLED FOR NOW
 //    implementation("dev.frozenmilk.sinister:Sloth:0.3.2")
-//    implementation("com.acmerobotics.slothboard:dashboard:0.3.2+0.6.0")
-//    implementation("com.bylazar.sloth:fullpanels:0.3.2+1.0.13")
+    implementation("com.acmerobotics.slothboard:dashboard:0.3.2+0.6.0")
+    implementation("com.bylazar.sloth:fullpanels:0.3.2+1.0.13") {
+        exclude module: "limelightproxy"
+    }
 
     //Downgraded because dash 0.6.0 crashes when installed along panels
-    implementation("com.acmerobotics.dashboard:dashboard:0.5.1")
-    implementation("com.bylazar:fullpanels:1.0.13")
+//    implementation("com.acmerobotics.dashboard:dashboard:0.6.0")
+//    implementation("com.bylazar:fullpanels:1.0.13") {
+//        exclude module: "limelightproxy"
+//    }
 
     implementation ("com.acmerobotics.roadrunner:core:1.0.1")
     implementation ("com.acmerobotics.roadrunner:ftc:0.1.25") {
@@ -87,4 +91,7 @@ dependencies {
     implementation ("com.acmerobotics.roadrunner:actions:1.0.1") {
         exclude group: "com.acmerobotics.dashboard"
     }
+
+    implementation ("com.pedropathing:revhub:3.0.1")
+    implementation ("com.pedropathing:tuning:1.0.1")
 }
