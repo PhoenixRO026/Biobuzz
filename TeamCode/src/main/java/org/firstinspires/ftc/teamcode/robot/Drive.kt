@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.robot
 
 import com.acmerobotics.dashboard.config.Config
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
+import com.qualcomm.robotcore.hardware.IMU
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.sin
@@ -18,22 +18,20 @@ class Drive(
     private val leftBack: DcMotor,
     private val rightFront: DcMotor,
     private val rightBack: DcMotor,
-    private val pinpoint: GoBildaPinpointDriver
+    private val imu: IMU
 ) {
     constructor(hardwareMap: HardwareMap): this(
         hardwareMap.get(DcMotor::class.java, HardwareNames.motorLeftFront),
         hardwareMap.get(DcMotor::class.java, HardwareNames.motorLeftBack),
         hardwareMap.get(DcMotor::class.java, HardwareNames.motorRightFront),
         hardwareMap.get(DcMotor::class.java, HardwareNames.motorRightBack),
-        hardwareMap.get(GoBildaPinpointDriver::class.java, HardwareNames.pinpoint)
+        hardwareMap.get(IMU::class.java, HardwareNames.imu)
     )
 
     companion object {
         @JvmField var slowSpeed = 0.5
-        @JvmField var xOffset = 0.0
-        @JvmField var yOffset = 0.0
-        @JvmField var xDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD
-        @JvmField var yDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD
+        @JvmField var logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD
+        @JvmField var usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.UP
     }
 
     init {
@@ -47,22 +45,18 @@ class Drive(
         leftFront.direction = DcMotorSimple.Direction.FORWARD
         leftBack.direction = DcMotorSimple.Direction.FORWARD
 
-        pinpoint.setOffsets(xOffset, yOffset, DistanceUnit.MM)
-        pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
-        pinpoint.setEncoderDirections(xDirection, yDirection)
-        pinpoint.resetPosAndIMU()
+        imu.initialize(
+            IMU.Parameters(
+                RevHubOrientationOnRobot(logoDirection, usbDirection)
+            )
+        )
+        imu.resetYaw()
     }
 
-    private var headingOffset = 0.0
-
-    private val heading get() = getHeadingRad() - headingOffset
+    private val heading get() = getHeadingRad()
 
     fun resetFieldCentric() {
-        headingOffset = getHeadingRad()
-    }
-
-    fun updatePinpoint() {
-        pinpoint.update()
+        imu.resetYaw()
     }
 
     var slowMode = false
@@ -95,12 +89,11 @@ class Drive(
         rightBack   .power = powerRB / maxPower
     }
 
-    private fun getHeadingRad() = pinpoint.getHeading(AngleUnit.RADIANS)
+    private fun getHeadingRad() = imu.robotYawPitchRollAngles.getYaw(AngleUnit.RADIANS)
 
     fun addTelemetry(telemetry: Telemetry) {
         telemetry.apply {
             addData("heading deg", Math.toDegrees(heading))
-            addData("pinpoint heading deg", Math.toDegrees(getHeadingRad()))
         }
     }
 }

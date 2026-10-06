@@ -40,7 +40,7 @@ class DriveOnly : LinearOpMode() {
         }
     }
     fun movement(drive: Drive) {
-        drive.updatePinpoint()
+        //drive.updatePinpoint()
 
         if (gamepad1.y) {
             drive.resetFieldCentric()
