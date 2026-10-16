@@ -41,7 +41,7 @@ class BuzzyDrive : LinearOpMode() {
 
         waitForStart()
 
-        transfer.initPos()
+        //transfer.initPos()
 
         while (opModeIsActive()) {
             timeKeep.resetDeltaTime()
@@ -82,25 +82,26 @@ class BuzzyDrive : LinearOpMode() {
         shooter.update(timeKeep.deltaTime)
     }
 
+
     fun transfer(transfer: Transfer, kicker: ButtonReader) {
         transfer.power = - gamepad2.left_stick_y.toDouble()
 
-        if (gamepad2.dpad_up) {
-            transfer.kickerPos += 0.33 * timeKeep.deltaTime.asS
-        } else if (gamepad2.dpad_down) {
-            transfer.kickerPos -= 0.33 * timeKeep.deltaTime.asS
-        }
-
-        if (kicker.wasJustPressed()) {
-            transfer.kickerUp()
-        }
-        if (kicker.wasJustReleased()) {
-            transfer.kickerDown()
-        }
+//        if (gamepad2.dpad_up) {
+//            transfer.kickerPos += 0.33 * timeKeep.deltaTime.asS
+//        } else if (gamepad2.dpad_down) {
+//            transfer.kickerPos -= 0.33 * timeKeep.deltaTime.asS
+//        }
+//
+//        if (kicker.wasJustPressed()) {
+//            transfer.kickerUp()
+//        }
+//        if (kicker.wasJustReleased()) {
+//            transfer.kickerDown()
+//        }
     }
 
     fun movement(drive: Drive) {
-        drive.updatePinpoint()
+        //drive.updatePinpoint()
 
         if (gamepad1.y) {
             drive.resetFieldCentric()

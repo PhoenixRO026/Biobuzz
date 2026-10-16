@@ -10,6 +10,7 @@ object HardwareNames {
     const val motorShooterLeft = "shooterLeft"
     const val motorShooterRight = "shooterRight"
     const val pinpoint = "odo"
+    const val imu = "imu"
     const val voltage = "Control Hub"
     const val servoKicker = "finger"
 }
