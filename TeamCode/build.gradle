@@ -92,6 +92,6 @@ dependencies {
         exclude group: "com.acmerobotics.dashboard"
     }
 
-    implementation ("com.pedropathing:revhub:3.0.1")
-    implementation ("com.pedropathing:tuning:1.0.1")
+    implementation ("com.pedropathing:revhub:3.0.2")
+    implementation ("com.pedropathing:tuning:1.0.2")
 }
