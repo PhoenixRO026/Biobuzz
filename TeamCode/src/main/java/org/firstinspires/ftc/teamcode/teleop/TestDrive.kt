@@ -1,74 +1,66 @@
 package org.firstinspires.ftc.teamcode.teleop
 
-import com.acmerobotics.dashboard.FtcDashboard
-import com.acmerobotics.dashboard.config.Config
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
+import com.bylazar.configurables.annotations.Configurable
+import com.bylazar.telemetry.PanelsTelemetry
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.robot.Drive
-import org.firstinspires.ftc.teamcode.robot.Intake
-import org.firstinspires.ftc.teamcode.robot.Transfer
+import org.firstinspires.ftc.teamcode.robot.Robot
 
-@Config("TestDrive")
 @TeleOp(name = "TestDrive")
 class TestDrive : LinearOpMode() {
-
-    companion object {
+    @Configurable
+    object TestDriveConfig {
         @JvmField var telemetryDisabled = false
     }
 
     override fun runOpMode() {
-        val drive = Drive(hardwareMap)
-        val intake = Intake(hardwareMap)
-        val transfer = Transfer(hardwareMap)
-
-        telemetry = MultipleTelemetry(telemetry, FtcDashboard.getInstance().telemetry)
+        val panelsTelemetry = PanelsTelemetry.telemetry
+        val robot = Robot(hardwareMap)
 
         waitForStart()
 
         while (opModeIsActive()) {
+            if (gamepad1.y) {
+                robot.drive.resetFieldCentric()
+            }
 
-            movement(drive)
-            intakeControl(intake)
-            transferControl(transfer)
+            robot.drive.isSlowMode = gamepad1.left_trigger_pressed
 
-            if (telemetryDisabled) continue
+            robot.drive.driveFieldCentric(
+                -gamepad1.left_stick_y.toDouble(),
+                -gamepad1.left_stick_x.toDouble(),
+                -gamepad1.right_stick_x.toDouble()
+            )
 
-            drive.addTelemetry(telemetry)
-            intake.addTelemetry(telemetry)
-            transfer.addTelemetry(telemetry)
-            telemetry.update()
-        }
-    }
+            if (gamepad1.right_bumper) {
+                robot.intake.startIntake()
+            }
+            else if (gamepad1.left_bumper) {
+                robot.intake.reverseIntake()
+            }
+            else {
+                robot.intake.stopIntake()
+            }
 
-    fun movement(drive: Drive) {
-        if (gamepad1.y) {
-            drive.resetFieldCentric()
-        }
+            if (gamepad1.right_trigger > 0.5) {
+                robot.transfer.startTransfer()
+            }
+            else if (gamepad1.left_trigger > 0.5) {
+                robot.transfer.reverseTransfer()
+            }
+            else if (gamepad1.a) {
+                robot.transfer.slowTransfer()
+            }
+            else {
+                robot.transfer.stopTransfer()
+            }
 
-        drive.slowMode = gamepad1.left_trigger_pressed
+            if (TestDriveConfig.telemetryDisabled) continue
 
-        drive.driveFieldCentric(
-            forward = -gamepad1.left_stick_y.toDouble(),
-            strafe = -gamepad1.left_stick_x.toDouble(),
-            rotate = -gamepad1.right_stick_x.toDouble()
-        )
-    }
-
-    fun intakeControl(intake: Intake) {
-        when {
-            gamepad1.right_bumper -> intake.start()
-            gamepad1.left_bumper -> intake.reverse()
-            else -> intake.stop()
-        }
-    }
-
-    fun transferControl(transfer: Transfer) {
-        when {
-            gamepad1.right_trigger > 0.5 -> transfer.start()
-            gamepad1.left_trigger > 0.5 -> transfer.reverse()
-            gamepad1.a -> transfer.slow()
-            else -> transfer.stop()
+            panelsTelemetry.addData("heading deg", Math.toDegrees(robot.drive.heading))
+            panelsTelemetry.addData("intake power", robot.intake.power)
+            panelsTelemetry.addData("transfer power", robot.transfer.power)
+            panelsTelemetry.update(telemetry)
         }
     }
 }

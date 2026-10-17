@@ -1,27 +1,26 @@
 package org.firstinspires.ftc.teamcode.auto
 
-import com.acmerobotics.dashboard.config.Config
+import com.bylazar.configurables.annotations.Configurable
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import org.firstinspires.ftc.teamcode.robot.Drive
+import org.firstinspires.ftc.teamcode.robot.Robot
 
-@Config("Leave Auto")
 @Autonomous(name = "Leave", preselectTeleOp = "Buzzy Drive")
 class LeaveAuto : LinearOpMode() {
-
-    companion object {
+    @Configurable
+    object LeaveAutoConfig {
         @JvmField var sleepMillis = 1000L
     }
 
     override fun runOpMode() {
-        val drive = Drive(hardwareMap)
+        val robot = Robot(hardwareMap)
 
         waitForStart()
 
-        drive.driveRobotCentric(0.5, 0.0, 0.0)
+        robot.drive.driveRobotCentric(0.5, 0.0, 0.0)
 
-        sleep(sleepMillis)
+        sleep(LeaveAutoConfig.sleepMillis)
 
-        drive.driveRobotCentric(0.0, 0.0 ,0.0)
+        robot.drive.driveRobotCentric(0.0, 0.0, 0.0)
     }
 }
