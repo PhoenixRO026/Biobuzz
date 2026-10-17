@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot
 
 import com.pedropathing.follower.Follower
+import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
@@ -13,14 +14,12 @@ import org.firstinspires.ftc.teamcode.pedro.Constants
 class Robot(
     hardwareMap: HardwareMap
 ) {
-    // Pedro is not configured yet (Constants.create returns null), so the IMU drive is used for now.
-    // To switch to the Pedro drive: uncomment the follower, make drive a Drive, build it with Drive(follower)
-    // and call robot.follower.update() every loop in the opmodes.
 //    val follower : Follower = Constants.create(hardwareMap)
     val drive : ImuDrive
     val intake : Intake
     val shooter: Shooter
     val transfer: Transfer
+    val limelight : Limelight
 
     init {
         // Drive
@@ -58,6 +57,11 @@ class Robot(
 
         val voltageSensor = hardwareMap.get(VoltageSensor::class.java, "Control Hub")
 
+        // Limelight
+        val camera = hardwareMap.get(Limelight3A::class.java, "limelight")
+        camera.setPollRateHz(60)
+        camera.start()
+
         // Intake
         val motorIntake = hardwareMap.get(DcMotorEx::class.java, "intake")
         motorIntake.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
@@ -88,6 +92,9 @@ class Robot(
         )
         intake = Intake(
             motor = motorIntake
+        )
+        limelight = Limelight(
+            camera = camera
         )
 
         shooter.targetRpm = 0.0
