@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.systemsTest
 import com.bylazar.configurables.annotations.Configurable
 import com.bylazar.telemetry.PanelsTelemetry
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.commonlibs.units.Time
+import com.commonlibs.units.ms
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.library.TimeKeep
 import org.firstinspires.ftc.teamcode.library.controller.PIDController
@@ -10,6 +12,8 @@ import org.firstinspires.ftc.teamcode.robot.Robot
 import kotlin.math.absoluteValue
 
 // Hold A to make the robot turn towards the pollen, drive to it and intake it.
+// When the pollen is close (targetArea) the camera can't see it well anymore, so the robot
+// drives straight for grabTimeMs to get it in the intake.
 // Release A to drive normally.
 @TeleOp
 class PollenChaseTest : LinearOpMode() {
@@ -27,6 +31,11 @@ class PollenChaseTest : LinearOpMode() {
         // turning speed while no pollen is seen, 0 to just wait
         @JvmField var searchTurn = 0.2
         @JvmField var runIntake = true
+        // drive straight this fast and this long once the pollen is close
+        @JvmField var grabPower = 0.4
+        @JvmField var grabTimeMs = 1000.0
+        // keep the last command for this long if the camera misses the pollen for a few frames
+        @JvmField var lostTimeoutMs = 300.0
     }
 
     override fun runOpMode() {
@@ -36,18 +45,30 @@ class PollenChaseTest : LinearOpMode() {
 
         robot.limelight.pollenPipeline()
 
+        var grabUntil = 0.ms
+        var lastSeen = 0.ms
+        var lastForward = 0.0
+        var lastTurn = 0.0
+
         waitForStart()
 
         while (opModeIsActive()) {
             timeKeep.resetDeltaTime()
             robot.limelight.update()
+            val now = Time.now()
 
             var forward = 0.0
             var turn = 0.0
             var state = "manual"
 
             if (gamepad1.a) {
-                if (robot.limelight.pollenVisible) {
+                if (now < grabUntil) {
+                    forward = PollenChaseConfig.grabPower
+                    state = "grabbing"
+                }
+                else if (robot.limelight.pollenVisible) {
+                    lastSeen = now
+
                     turn = PollenChaseConfig.turnController
                         .calculate(robot.limelight.pollenTxFiltered, 0.0, timeKeep.deltaTime)
                         .coerceIn(-PollenChaseConfig.maxTurn, PollenChaseConfig.maxTurn)
@@ -59,11 +80,22 @@ class PollenChaseTest : LinearOpMode() {
                     }
 
                     if (robot.limelight.pollenArea >= PollenChaseConfig.targetArea) {
-                        state = "at pollen"
+                        grabUntil = now + PollenChaseConfig.grabTimeMs.ms
+                        forward = PollenChaseConfig.grabPower
+                        turn = 0.0
+                        state = "grabbing"
                     }
                     else {
                         state = "chasing"
                     }
+
+                    lastForward = forward
+                    lastTurn = turn
+                }
+                else if (now - lastSeen < PollenChaseConfig.lostTimeoutMs.ms) {
+                    forward = lastForward
+                    turn = lastTurn
+                    state = "lost"
                 }
                 else {
                     turn = PollenChaseConfig.searchTurn
@@ -80,6 +112,8 @@ class PollenChaseTest : LinearOpMode() {
                 }
             }
             else {
+                grabUntil = 0.ms
+
                 robot.drive.driveRobotCentric(
                     -gamepad1.left_stick_y.toDouble(),
                     -gamepad1.left_stick_x.toDouble(),

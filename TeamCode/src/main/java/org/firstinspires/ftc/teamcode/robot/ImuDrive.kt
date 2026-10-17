@@ -46,12 +46,12 @@ class ImuDrive(
     fun driveRobotCentric(forward: Double, strafe: Double, rotate: Double) {
         val x = forward * currentSpeed
         val y = strafe * currentSpeed
-        val heading = rotate * currentSpeed
+        val turn = rotate * currentSpeed
 
-        val powerLF = x - y - heading
-        val powerLB = x + y - heading
-        val powerRB = x - y + heading
-        val powerRF = x + y + heading
+        val powerLF = x - y - turn
+        val powerLB = x + y - turn
+        val powerRB = x - y + turn
+        val powerRF = x + y + turn
 
         val maxPower =
             listOf(1.0, powerLF, powerLB, powerRB, powerRF)
