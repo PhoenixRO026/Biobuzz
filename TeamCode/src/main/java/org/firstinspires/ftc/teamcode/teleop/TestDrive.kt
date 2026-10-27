@@ -20,6 +20,7 @@ class TestDrive : LinearOpMode() {
         waitForStart()
 
         while (opModeIsActive()) {
+            robot.follower.update()
             if (gamepad1.y) {
                 robot.drive.resetFieldCentric()
             }

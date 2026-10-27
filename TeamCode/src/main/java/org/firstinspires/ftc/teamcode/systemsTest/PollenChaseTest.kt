@@ -53,6 +53,7 @@ class PollenChaseTest : LinearOpMode() {
         waitForStart()
 
         while (opModeIsActive()) {
+            robot.follower.update()
             timeKeep.resetDeltaTime()
             robot.limelight.update()
             val now = Time.now()

@@ -16,6 +16,7 @@ class QrTest : LinearOpMode() {
         waitForStart()
 
         while (opModeIsActive()) {
+            robot.follower.update()
             robot.limelight.update()
 
             robot.drive.driveRobotCentric(

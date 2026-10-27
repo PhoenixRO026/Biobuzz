@@ -28,6 +28,7 @@ class BuzzyDrive : LinearOpMode() {
         waitForStart()
 
         while (opModeIsActive()) {
+            robot.follower.update()
             timeKeep.resetDeltaTime()
             buttons.forEach { it.readValue() }
 
