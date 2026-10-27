@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot
 
 import com.pedropathing.follower.Follower
+import com.pedropathing.ivy.Command
+import com.pedropathing.ivy.groups.Groups.parallel
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
@@ -101,4 +103,14 @@ class Robot(
         intake.stopIntake()
         transfer.stopTransfer()
     }
+
+    fun allStartCommand() : Command = parallel(
+        intake.startIntakeCommand(),
+        transfer.startTransferCommand()
+    )
+
+    fun allStopCommand() : Command = parallel(
+        intake.stopIntakeCommand(),
+        transfer.stopTransferCommand()
+    )
 }

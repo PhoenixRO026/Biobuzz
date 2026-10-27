@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teleop
 
 import com.bylazar.configurables.annotations.Configurable
 import com.bylazar.telemetry.PanelsTelemetry
+import com.pedropathing.ivy.Scheduler
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.library.TimeKeep
@@ -18,6 +19,7 @@ class BuzzyDrive : LinearOpMode() {
     override fun runOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
         val robot = Robot(hardwareMap)
+        Scheduler.reset()
 
         val increaseRpm = ButtonReader { gamepad2.right_bumper }
         val decreaseRpm = ButtonReader { gamepad2.left_bumper }
@@ -72,6 +74,8 @@ class BuzzyDrive : LinearOpMode() {
 //            }
 
             robot.intake.power = gamepad2.right_trigger.toDouble() - gamepad2.left_trigger.toDouble()
+
+            Scheduler.execute()
 
             if (BuzzyConfig.telemetryDisabled) continue
 

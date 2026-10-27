@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot
 
 import com.bylazar.configurables.annotations.Configurable
+import com.pedropathing.ivy.Command
+import com.pedropathing.ivy.commands.Commands.instant
 import com.qualcomm.robotcore.hardware.DcMotorEx
 
 class Intake(
@@ -21,4 +23,8 @@ class Intake(
     fun startIntake() { power = IntakeConfig.intakePower }
     fun stopIntake() { power = 0.0 }
     fun reverseIntake() { power = IntakeConfig.reversePower }
+
+    fun startIntakeCommand() : Command = instant { startIntake() }
+    fun stopIntakeCommand() : Command = instant { stopIntake() }
+    fun reverseIntakeCommand() : Command = instant { reverseIntake() }
 }

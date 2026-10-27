@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teleop
 
 import com.bylazar.configurables.annotations.Configurable
 import com.bylazar.telemetry.PanelsTelemetry
+import com.pedropathing.ivy.Scheduler
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.robot.Robot
@@ -16,6 +17,7 @@ class TestDrive : LinearOpMode() {
     override fun runOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
         val robot = Robot(hardwareMap)
+        Scheduler.reset()
 
         waitForStart()
 
@@ -55,6 +57,8 @@ class TestDrive : LinearOpMode() {
             else {
                 robot.transfer.stopTransfer()
             }
+
+            Scheduler.execute()
 
             if (TestDriveConfig.telemetryDisabled) continue
 

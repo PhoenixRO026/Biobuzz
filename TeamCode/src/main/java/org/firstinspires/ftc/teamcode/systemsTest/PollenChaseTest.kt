@@ -2,9 +2,10 @@ package org.firstinspires.ftc.teamcode.systemsTest
 
 import com.bylazar.configurables.annotations.Configurable
 import com.bylazar.telemetry.PanelsTelemetry
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.commonlibs.units.Time
 import com.commonlibs.units.ms
+import com.pedropathing.ivy.Scheduler
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.library.TimeKeep
 import org.firstinspires.ftc.teamcode.library.controller.PIDController
@@ -41,6 +42,7 @@ class PollenChaseTest : LinearOpMode() {
     override fun runOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
         val robot = Robot(hardwareMap)
+        Scheduler.reset()
         val timeKeep = TimeKeep()
 
         robot.limelight.pollenPipeline()
@@ -122,6 +124,8 @@ class PollenChaseTest : LinearOpMode() {
                 )
                 robot.intake.power = gamepad1.right_trigger.toDouble() - gamepad1.left_trigger.toDouble()
             }
+
+            Scheduler.execute()
 
             panelsTelemetry.addData("state", state)
             panelsTelemetry.addData("limelight connected", robot.limelight.isConnected)

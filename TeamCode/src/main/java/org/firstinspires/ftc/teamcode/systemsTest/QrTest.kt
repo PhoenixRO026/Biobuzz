@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.systemsTest
 
 import com.bylazar.telemetry.PanelsTelemetry
+import com.pedropathing.ivy.Scheduler
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.robot.Robot
@@ -10,6 +11,7 @@ class QrTest : LinearOpMode() {
     override fun runOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
         val robot = Robot(hardwareMap)
+        Scheduler.reset()
 
         robot.limelight.qrPipeline()
 
@@ -24,6 +26,8 @@ class QrTest : LinearOpMode() {
                 -gamepad1.left_stick_x.toDouble(),
                 -gamepad1.right_stick_x.toDouble()
             )
+
+            Scheduler.execute()
 
             panelsTelemetry.addData("limelight connected", robot.limelight.isConnected)
             panelsTelemetry.addData("pipeline", robot.limelight.pipelineIndex)

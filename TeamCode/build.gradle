@@ -94,4 +94,6 @@ dependencies {
 
     implementation ("com.pedropathing:revhub:3.0.2")
     implementation ("com.pedropathing:tuning:1.0.2")
+    // only the commands part of Ivy works with Pedro 3, PedroCommands (follow, hold, turn) is made for Pedro 2
+    implementation ("com.pedropathing:ivy:1.0.0")
 }

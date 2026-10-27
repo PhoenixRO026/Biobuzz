@@ -2,9 +2,14 @@ package org.firstinspires.ftc.teamcode.robot
 
 import com.bylazar.configurables.annotations.Configurable
 import com.commonlibs.units.Duration
+import com.pedropathing.ivy.Command
+import com.pedropathing.ivy.commands.Commands.instant
+import com.pedropathing.ivy.commands.Commands.waitUntil
+import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.teamcode.library.controller.PIDController
+import kotlin.math.abs
 
 class Shooter(
     val motorLeft : DcMotorEx,
@@ -21,6 +26,7 @@ class Shooter(
         )
         @JvmField var kS = 1.125
         @JvmField var kV = 0.002065
+        @JvmField var targetRpmTolerance = 50.0
     }
 
     var targetRpm = 0.0
@@ -53,7 +59,18 @@ class Shooter(
         shooterPower = pidPower + feedforwardPower / voltage
     }
 
+    fun shooterBusy(): Boolean {
+        return abs(targetRpm - currentRpm) > ShooterConfig.targetRpmTolerance
+    }
+
     fun goToRpm(rpm : Double) {
         targetRpm = rpm
     }
+
+    // updateRpm has to be called every loop, otherwise this never finishes
+    fun goToRpmCommand(rpm: Double): Command =
+        sequential(
+            instant { goToRpm(rpm) },
+            waitUntil { !shooterBusy() }
+        )
 }
