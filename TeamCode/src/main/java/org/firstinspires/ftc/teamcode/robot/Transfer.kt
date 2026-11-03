@@ -1,16 +1,30 @@
 package org.firstinspires.ftc.teamcode.robot
 
 import com.bylazar.configurables.annotations.Configurable
+import com.pedropathing.ivy.Command
+import com.pedropathing.ivy.commands.Commands.instant
+import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.DcMotorEx
 
 class Transfer(
-    val motor: DcMotorEx
+    val motor: DcMotorEx,
+    val distanceSensor: AnalogInput
 ) {
-    @Configurable
-    object TransferConfig {
-        @JvmField var transferPower = 1.0
-        @JvmField var slowPower = 0.3
-        @JvmField var reversePower = -1.0
+
+    data object TransferConfig {
+        val maxVoltage = 3.3
+        val maxDistanceMm = 1000.0
+    }
+
+    var distance = 0.0
+        get() =  voltageToDistanceMm(distanceSensor.voltage)
+
+    fun voltageToDistanceMm(voltage: Double): Double {
+        return (voltage / TransferConfig.maxVoltage) * TransferConfig.maxDistanceMm
+    }
+
+    fun isBallPresent(): Boolean {
+        return distance in 0.0 .. 60.0
     }
 
     var power
@@ -19,8 +33,13 @@ class Transfer(
             motor.power = value
         }
 
-    fun startTransfer() { power = TransferConfig.transferPower }
+    fun startTransfer() { power = 1.0 }
     fun stopTransfer() { power = 0.0 }
-    fun reverseTransfer() { power = TransferConfig.reversePower }
-    fun slowTransfer() { power = TransferConfig.slowPower }
+    fun reverseTransfer() { power = -1.0 }
+    fun slowTransfer() { power = 0.3 }
+
+    fun startTransferCommand() : Command = instant { startTransfer() }
+    fun stopTransferCommand() : Command = instant { stopTransfer() }
+    fun reverseTransferCommand() : Command = instant { reverseTransfer() }
+    fun slowTransferCommand() : Command = instant { slowTransfer() }
 }

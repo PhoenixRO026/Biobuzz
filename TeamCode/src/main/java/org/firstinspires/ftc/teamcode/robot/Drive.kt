@@ -8,7 +8,6 @@ import kotlin.math.sin
 class Drive(
     private val follower: Follower
 ) {
-    @Configurable
     object DriveConfig {
         @JvmField var slowSpeed = 0.5
     }
@@ -19,6 +18,8 @@ class Drive(
 
     val heading: Double
         get() = follower.pose().heading() - headingOffset
+
+    var distanceFromGoal = 0.0
 
     private val currentSpeed: Double
         get() = if (isSlowMode) DriveConfig.slowSpeed else 1.0

@@ -45,10 +45,10 @@ class BuzzyDrive : LinearOpMode() {
             )
 
             if (increaseRpm.wasJustPressed()) {
-                robot.shooter.targetRpm += 500
+                robot.shooter.targetRpm_Rhino += 500
             }
             if (decreaseRpm.wasJustPressed()) {
-                robot.shooter.targetRpm -= 500
+                robot.shooter.targetRpm_Rhino -= 500
             }
             if (gamepad2.b) {
                 robot.shooter.goToRpm(0.0)
@@ -75,9 +75,9 @@ class BuzzyDrive : LinearOpMode() {
 
             if (BuzzyConfig.telemetryDisabled) continue
 
-            panelsTelemetry.addData("target rpm", robot.shooter.targetRpm)
-            panelsTelemetry.addData("current rpm", robot.shooter.currentRpm)
-            panelsTelemetry.addData("shooter power", robot.shooter.shooterPower)
+            panelsTelemetry.addData("target rpm", robot.shooter.targetRpm_Rhino)
+            panelsTelemetry.addData("current rpm", robot.shooter.currentRpm_Rhino)
+            panelsTelemetry.addData("shooter power", robot.shooter.motorPower_Rhino)
             panelsTelemetry.addData("voltage", robot.shooter.voltage)
             panelsTelemetry.addData("heading deg", Math.toDegrees(robot.drive.heading))
             panelsTelemetry.addData("intake power", robot.intake.power)

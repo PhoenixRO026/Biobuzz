@@ -1,111 +1,142 @@
 package org.firstinspires.ftc.teamcode.robot
 
-import com.bylazar.configurables.annotations.Configurable
-import com.qualcomm.hardware.limelightvision.LLResult
 import com.qualcomm.hardware.limelightvision.Limelight3A
-import org.firstinspires.ftc.teamcode.library.controller.LowPassFilter
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D
+import com.pedropathing.math.Pose
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
+import kotlin.math.PI
 
 class Limelight(
     val camera : Limelight3A
 ) {
-    @Configurable
-    object LimelightConfig {
-        // pipeline indexes, as set up in the limelight web interface (http://limelight.local:5801)
-        @JvmField var qrPipeline = 0
-        @JvmField var pollenPipeline = 1
-
-        // class name of the pollen in a trained neural detector model (ignored for color pipelines)
-        @JvmField var pollenClassName = "pollen"
-
-        @JvmField var maxStalenessMs = 100L
-        @JvmField var txFilter = LowPassFilter(0.3)
-    }
-
-    var latestResult : LLResult? = null
+    var headingErrorDeg: Double = 0.0
         private set
 
-    var freshResult = false
+    var tagVisible: Boolean = false
         private set
 
-    // QR codes seen in the latest frame
-    var qrCodes : List<String> = emptyList()
+    var aprilTagDistance: Double = 0.0
         private set
 
-    // last QR code ever seen, stays after the code leaves the frame
-    var lastQrCode : String? = null
+    var limelightPose: Pose = Pose(0.0, 0.0, 0.0)
         private set
 
-    var pollenVisible = false
-        private set
+    var limelightPoseValid: Boolean = false
 
-    // horizontal angle to the pollen, positive = pollen is to the right
-    var pollenTx = 0.0
-        private set
+    data class LLResult(
+        val pose: Pose,
+        val timestamp: Long
+    )
 
-    var pollenTxFiltered = 0.0
-        private set
+    fun getNewPose(): LLResult? {
+        val result = camera.latestResult ?: return null
 
-    // vertical angle to the pollen, positive = pollen is up
-    var pollenTy = 0.0
-        private set
-
-    // how much of the image the pollen takes (0 - 100 %), bigger = closer
-    var pollenArea = 0.0
-        private set
-
-    val isConnected get() = camera.isConnected
-
-    val pipelineIndex get() = latestResult?.pipelineIndex ?: -1
-
-    fun update() {
-        freshResult = false
-        qrCodes = emptyList()
-        pollenVisible = false
-
-        val result = camera.latestResult ?: return
-        latestResult = result
-        if (result.staleness > LimelightConfig.maxStalenessMs) return
-        freshResult = true
-
-        updateQr(result)
-        updatePollen(result)
-    }
-
-    private fun updateQr(result: LLResult) {
-        qrCodes = result.barcodeResults.mapNotNull { it.data }
-        if (qrCodes.isNotEmpty()) {
-            lastQrCode = qrCodes.first()
+        if (!(result.isValid && result.staleness > 200)) {
+            return null
         }
+
+        val botpose = result.botpose
+
+        val variance = result.stddevMt1
+
+        val posInInches = botpose.position.toUnit(DistanceUnit.INCH)
+
+        val ftcX = posInInches.x
+        val ftcY = posInInches.y
+        val ftcHeading = botpose.orientation.getYaw(AngleUnit.RADIANS)
+
+        val pose = Pose(
+            ftcY + 72.0,
+            72.0 - ftcX,
+            ftcHeading - (PI / 2.0)
+        )
+
+        val timestamp = result.controlHubTimeStamp
+
+        return LLResult(pose, timestamp)
     }
 
-    // works with a neural detector pipeline (trained model) or a color pipeline, takes the biggest target
-    private fun updatePollen(result: LLResult) {
-        val detected = result.detectorResults
-            .filter { it.className == LimelightConfig.pollenClassName }
-            .maxByOrNull { it.targetArea }
-        val colored = result.colorResults
-            .maxByOrNull { it.targetArea }
-
-        if (detected != null) {
-            setPollen(detected.targetXDegrees, detected.targetYDegrees, detected.targetArea)
+    fun updateLimelightPose() {
+        val result = camera.latestResult ?: run {
+            aprilTagDistance = Double.NaN
+            limelightPoseValid = false
+            return
         }
-        else if (colored != null) {
-            setPollen(colored.targetXDegrees, colored.targetYDegrees, colored.targetArea)
+
+        if (!result.isValid || result.staleness > 100) {
+            aprilTagDistance = Double.NaN
+            limelightPoseValid = false
+            return
         }
+
+        val fid = result.fiducialResults
+            .firstOrNull { it.fiducialId in listOf(20, 24) }
+            ?: run {
+                aprilTagDistance = Double.NaN
+                limelightPoseValid = false
+                return
+            }
+
+        val pose = fid.robotPoseFieldSpace ?: run {
+            limelightPoseValid = false
+            return
+        }
+
+        val ftcPose = Pose2D(
+            pose.position.unit,
+            pose.position.x,
+            pose.position.y,
+            AngleUnit.RADIANS,
+            pose.orientation.getYaw(AngleUnit.RADIANS)
+        )
+
+        val xInches = pose.position.unit.toInches(pose.position.x)
+        val yInches = pose.position.unit.toInches(pose.position.y)
+        val yawRad = pose.orientation.getYaw(AngleUnit.RADIANS)
+
+
+        limelightPose = Pose(
+            xInches + 72.0,
+            yInches + 72.0,
+            yawRad
+        )
+        limelightPoseValid = true
     }
 
-    private fun setPollen(tx: Double, ty: Double, area: Double) {
-        pollenVisible = true
-        pollenTx = tx
-        pollenTxFiltered = LimelightConfig.txFilter.estimate(tx)
-        pollenTy = ty
-        pollenArea = area
+    fun updateDistance() {
+        val fid = camera.latestResult
+            ?.fiducialResults
+            ?.firstOrNull { it.fiducialId in listOf(20, 24) }
+            ?: run { aprilTagDistance = Double.NaN; return }
+
+        val pose = fid.targetPoseCameraSpace ?: run {
+            aprilTagDistance = 0.0
+            return
+        }
+
+        val x = pose.position.x
+        val y = pose.position.y
+        val z = pose.position.z
+
+        aprilTagDistance = kotlin.math.sqrt(x * x + y * y + z * z) * 100
     }
 
-    fun switchPipeline(index: Int) {
+    fun setPipeline(index: Int) {
         camera.pipelineSwitch(index)
     }
 
-    fun qrPipeline() { switchPipeline(LimelightConfig.qrPipeline) }
-    fun pollenPipeline() { switchPipeline(LimelightConfig.pollenPipeline) }
+    fun updateHeadingError() {
+        val fid = camera.latestResult
+            ?.fiducialResults
+            ?.firstOrNull()
+
+        if (fid != null) {
+            headingErrorDeg = -fid.targetXDegrees
+            tagVisible = true
+        } else {
+            headingErrorDeg = 0.0
+            tagVisible = false
+        }
+    }
 }
