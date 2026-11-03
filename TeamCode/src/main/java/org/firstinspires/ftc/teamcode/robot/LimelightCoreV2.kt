@@ -7,7 +7,7 @@ import com.qualcomm.hardware.limelightvision.LLResult
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.library.controller.LowPassFilter
-import org.psilynx.psikit.core.Logger
+//import org.psilynx.psikit.core.Logger
 import kotlin.math.absoluteValue
 
 class LimelightCoreV2(
@@ -28,7 +28,7 @@ class LimelightCoreV2(
         @JvmField
         var aimCooldownS = 0.2
     }
-    private var lastAimTime = Logger.getTimestamp()
+    private var lastAimTime = 0.0//Logger.getTimestamp()
 
     private var _latestResult: LLResult? = null
     val latestResult: LLResult? get() = _latestResult
@@ -96,10 +96,10 @@ class LimelightCoreV2(
         updateTx(result)
     }
 
-    fun aimOnCooldown() = Logger.getTimestamp() - lastAimTime < LLCore2.aimCooldownS
+    fun aimOnCooldown() = /*Logger.getTimestamp()*/ - lastAimTime < LLCore2.aimCooldownS
 
     fun resetAimCooldown() {
-        lastAimTime = Logger.getTimestamp()
+        lastAimTime = 0.0//Logger.getTimestamp()
     }
 
     fun addTelemetry(telemetryManager: TelemetryManager) {

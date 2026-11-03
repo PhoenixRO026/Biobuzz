@@ -18,10 +18,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class Constants {
     // Same motor names and directions as in Robot.kt. Check them with the Mecanum Tuner.
     public static MecanumConfig drivetrainConfig = new MecanumConfig(c -> {
-        c.frontLeftName.set("leftFront");
-        c.frontRightName.set("rightFront");
-        c.backLeftName.set("leftBack");
-        c.backRightName.set("rightBack");
+        c.frontLeftName.set("motorLF");
+        c.frontRightName.set("motorRF");
+        c.backLeftName.set("motorLB");
+        c.backRightName.set("motorRB");
         c.frontLeftDirection.set(DcMotorSimple.Direction.FORWARD);
         c.frontRightDirection.set(DcMotorSimple.Direction.REVERSE);
         c.backLeftDirection.set(DcMotorSimple.Direction.FORWARD);

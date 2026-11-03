@@ -83,8 +83,8 @@ class Robot(
         camera.start()
 
         // Shooter
-        val motorShooterLeft = hardwareMap.get(DcMotorEx::class.java, "shooterLeft")
-        val motorShooterRight = hardwareMap.get(DcMotorEx::class.java, "shooterRight")
+        val motorShooterLeft = hardwareMap.get(DcMotorEx::class.java, "motorShooter1")
+        val motorShooterRight = hardwareMap.get(DcMotorEx::class.java, "motorShooter2")
         motorShooterLeft.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         motorShooterLeft.direction = DcMotorSimple.Direction.FORWARD
         motorShooterLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
@@ -125,7 +125,8 @@ class Robot(
             servo2 = servoTurret2,
             finger = finger,
             voltageSensor = voltageSensor,
-            motorEncoder = motorRB,
+            motorEncoder_Rhino = motorShooterLeft,
+            motorEncoder_Gecko = motorShooterRight,
         )
         transfer = Transfer(
             motor = motorTransfer,

@@ -25,9 +25,6 @@ class ShooterTestWithPID : LinearOpMode() {
         val panelsTelemetry = PanelsTelemetry.telemetry
 
         val timeKeep = TimeKeep()
-        val motor = hardwareMap.get(DcMotorEx::class.java, "motorShooter1")
-        val motor2 = hardwareMap.get(DcMotorEx::class.java, "motorShooter2")
-        val voltageSensor = hardwareMap.voltageSensor.iterator().next()
 
         val robot = Robot(hardwareMap)
         waitForStart()
@@ -50,6 +47,7 @@ class ShooterTestWithPID : LinearOpMode() {
             robot.transfer.power = gamepad1.left_trigger.toDouble() - gamepad1.right_trigger.toDouble()
 
             robot.shooter.updateRpm(timeKeep.deltaTime)
+            telemetry.addData("motor transfer power", robot.transfer.power)
             telemetry.addData("motor gecko rpm", robot.shooter.currentRpm_Gecko)
             telemetry.addData("motor gecko target rpm", robot.shooter.targetRpm_Gecko)
             telemetry.addData("motor rhino rpm", robot.shooter.currentRpm_Rhino)

@@ -20,7 +20,8 @@ class Shooter(
     val servo2 : Servo,
     val finger : Servo,
     val voltageSensor : VoltageSensor,
-    val motorEncoder : DcMotorEx
+    val motorEncoder_Rhino : DcMotorEx,
+    val motorEncoder_Gecko : DcMotorEx
 ) {
     @Configurable
     object ShooterConfig {
@@ -104,8 +105,8 @@ class Shooter(
 
     var autoRpm_Rhino = 0.0
     var autoRpm_Gecko = 0.0
-    val currentRpm_Rhino get() = -motorRhino.velocity * 60.0 / 28
-    val currentRpm_Gecko get() = -motorGecko.velocity * 60.0 / 28
+    val currentRpm_Rhino get() = -motorEncoder_Rhino.velocity * 60.0 / 28
+    val currentRpm_Gecko get() = -motorEncoder_Gecko.velocity * 60.0 / 28
 
     var voltage = 12.0
 
